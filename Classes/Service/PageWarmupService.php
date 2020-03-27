@@ -44,7 +44,17 @@ class PageWarmupService
     public function warmUp(SymfonyStyle $io)
     {
         $this->io = $io;
-        // fetch all pages which are not deleted and in live workspace
+
+        // fetch all pages which are not deleted and in live workspace and not one of excluded types
+        $excludeDocTypes = [
+            3, // external link
+            4, // shortcut
+            6, // be user section
+            7, // mount point
+            199, // menu separator
+            254, // folder
+            255 // recycler
+        ];
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('pages');
         $queryBuilder->getRestrictions()
@@ -53,7 +63,7 @@ class PageWarmupService
             ->add(GeneralUtility::makeInstance(HiddenRestriction::class))
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
         $statement = $queryBuilder->select('*')->from('pages')->where(
-            $queryBuilder->expr()->eq('doktype', 1), //call only standard pages
+            $queryBuilder->expr()->notIn('doktype', $excludeDocTypes),
             $queryBuilder->expr()->eq('sys_language_uid', 0)
         )->execute();
 
