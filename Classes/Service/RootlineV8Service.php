@@ -23,6 +23,11 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  */
 class RootlineV8Service
 {
+    public function warmUp(SymfonyStyle $io)
+    {
+        $this->warmupRootline($io);
+    }
+
     /**
      * Runs through all pages and pages_language_overlay records
      * and builds the rootline for each page.
