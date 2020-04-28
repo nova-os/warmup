@@ -1,15 +1,5 @@
 <?php
 
-########################################################################
-# Extension Manager/Repository config file for ext "warmup".
-#
-# Auto generated 16-05-2017 15:25
-#
-# Manual updates:
-# Only the data in the array - everything else is removed by next
-# writing. "version" and "dependencies" must not be touched!
-########################################################################
-
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Cache Warmup',
 	'description' => 'Allows to warmup caches via the command line interface',
@@ -17,10 +7,10 @@ $EM_CONF[$_EXTKEY] = array(
 	'author' => 'b13 GmbH',
 	'author_email' => 'typo3@b13.com',
 	'state' => 'stable',
-	'version' => '1.2.0',
+	'version' => '1.3.0',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '8.7.0-9.5.99',
+			'typo3' => '8.7.0-10.4.99',
 		),
 		'conflicts' => array(
 		),

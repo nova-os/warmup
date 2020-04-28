@@ -9,7 +9,7 @@ then flush caches.
 The current state is intended for TYPO3 v8 LTS, and handles
 the Rootline Cache.
 
-For TYPO3 v9 LTS, pages can be called as well.
+For TYPO3 v9+ LTS, pages can be called as well.
 
 ## Rootline Cache
 One of the main issues here is a large installation with lots of
