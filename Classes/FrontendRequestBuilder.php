@@ -102,7 +102,8 @@ class FrontendRequestBuilder
         } catch (PageNotFoundException $e) {
             // @todo: log
         } catch (\Throwable $e) {
-            var_dump(get_class($e));
+            // @todo: log
+            // var_dump(get_class($e));
         }
 
         $this->restore();
