@@ -53,7 +53,7 @@ class FrontendRequestBuilder
         $this->initializeEnvironmentForNonCliCall(GeneralUtility::getApplicationContext());
 
         $this->originalEnvironmentService = GeneralUtility::makeInstance(EnvironmentService::class);
-        if (class_exists(Typo3Version::class) && (new Typo3Version)->getMajorVersion() < 10) {
+        if (!class_exists(Typo3Version::class) || (new Typo3Version)->getMajorVersion() < 10) {
             $environmentService = new class extends EnvironmentService {
                 public function isEnvironmentInFrontendMode()
                 {
