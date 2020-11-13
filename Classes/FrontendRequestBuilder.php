@@ -24,6 +24,7 @@ use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\MiddlewareDispatcher;
 use TYPO3\CMS\Core\Http\MiddlewareStackResolver;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Service\DependencyOrderingService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -52,22 +53,41 @@ class FrontendRequestBuilder
         $this->initializeEnvironmentForNonCliCall(GeneralUtility::getApplicationContext());
 
         $this->originalEnvironmentService = GeneralUtility::makeInstance(EnvironmentService::class);
-        $environmentService = new class extends EnvironmentService {
-            public function isEnvironmentInFrontendMode()
-            {
-                return true;
-            }
-            public function isEnvironmentInBackendMode()
-            {
-                return false;
-            }
-            public function isEnvironmentInCliMode()
-            {
-                return false;
-            }
-        };
+        if (!class_exists(Typo3Version::class) || (new Typo3Version)->getMajorVersion() < 10) {
+            $environmentService = new class extends EnvironmentService {
+                public function isEnvironmentInFrontendMode()
+                {
+                    return true;
+                }
+                public function isEnvironmentInBackendMode()
+                {
+                    return false;
+                }
+                public function isEnvironmentInCliMode()
+                {
+                    return false;
+                }
+            };
+            GeneralUtility::setSingletonInstance(Dispatcher::class, new Dispatcher());
+        } else {
+            // TYPO3 v10 ships with strict types
+            $environmentService = new class extends EnvironmentService {
+                public function isEnvironmentInFrontendMode(): bool
+                {
+                    return true;
+                }
+                public function isEnvironmentInBackendMode(): bool
+                {
+                    return false;
+                }
+                public function isEnvironmentInCliMode()
+                {
+                    return false;
+                }
+            };
+
+        }
         GeneralUtility::setSingletonInstance(EnvironmentService::class, $environmentService);
-        GeneralUtility::setSingletonInstance(Dispatcher::class, new Dispatcher());
 
         $GLOBALS['BE_USER'] = null;
         unset($GLOBALS['TSFE']);
