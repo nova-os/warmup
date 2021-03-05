@@ -11,5 +11,10 @@
     "psr-4": {
       "B13\\Warmup\\": "Classes/"
     }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "warmup"
+    }
   }
 }
