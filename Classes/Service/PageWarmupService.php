@@ -55,6 +55,21 @@ class PageWarmupService
             254, // folder
             255 // recycler
         ];
+
+        $excludePages = [];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('cf_cache_pages_tags');
+        $pagesInCache = $queryBuilder->select('*')->from('cf_cache_pages_tags')->where(
+            $queryBuilder->expr()->like(
+                'tag',
+                '\'pageId_%\''
+            )
+        )->execute();
+
+        while ($pidInCache = $pagesInCache->fetch()) {
+            $excludePages[] = preg_replace('/^pageId_/', '', $pidInCache['tag']);
+        }
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('pages');
         $queryBuilder->getRestrictions()
@@ -64,8 +79,9 @@ class PageWarmupService
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
         $statement = $queryBuilder->select('*')->from('pages')->where(
             $queryBuilder->expr()->notIn('doktype', $excludeDocTypes),
+            $queryBuilder->expr()->notIn('uid', $excludePages),
             $queryBuilder->expr()->eq('sys_language_uid', 0)
-        )->execute();
+        )->setMaxResults(100)->execute();
 
         $io->writeln('Starting to request pages at ' . date('d.m.Y H:i:s'));
         $requestedPages = 0;
